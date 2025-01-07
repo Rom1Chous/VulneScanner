@@ -1,0 +1,21 @@
+from hamcrest import empty
+import requests
+from bs4 import BeautifulSoup
+import sys
+from urllib.parse import urljoin, urlparse
+import os
+
+
+domain = "https://www.hackthissite.org/" 
+#domain="https://www.hackthissite.org/missions/basic/6/" 
+#domain = "https://pswd.rsg.opalstacked.com/" 
+#domain = "Ittp://localhost :3000° 
+#domain = "http://atlas-picoct.f.net :53456/" # ApicoCIF File upload 
+headers = requests.get (domain).headers
+print(headers)
+
+#Testing for ClickJacking vulnerability
+
+#generate file for report
+file = open('VulnerabilityReport.txt', 'w')
+file.write(domain + ' Vulnerability Scanner Tests Report\n \n')
