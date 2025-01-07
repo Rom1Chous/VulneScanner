@@ -19,3 +19,42 @@ print(headers)
 #generate file for report
 file = open('VulnerabilityReport.txt', 'w')
 file.write(domain + ' Vulnerability Scanner Tests Report\n \n')
+
+
+if 'X-Frame-Options' in headers or 'Content-Security-Policy' in headers:
+    print(domain + " NOT Vulnerable")
+    file.write('ClickJacking Vulnerability: Not Vulnerable to X-Frame-Options')
+    
+else:
+    print(domain + " Vulnerable")
+    file.write('ClickJacking Vulnerability: Vulnerable X-Frame-Options missing in headers\n')
+
+#testing for potential Compression Bomb vulnerability
+
+def check_compression(domain):
+
+    headers = {
+            "Accept-Encoding": "gzip, deflate, br"
+        }
+ 
+    try:
+            response = requests.get(domain, headers=headers)
+
+            # Print out the headers to check the 'Content-Encoding' header
+            print(f"Request URL: {domain}")
+            print("Response Headers:")
+            for key, value in response.headers.items():
+                print(f"{key}: {value}")
+
+            # Check if 'Content-Encoding' is gzip, deflate, or br
+            content_encoding = response.headers.get("Content-Encoding", "").lower()
+            if content_encoding in ["gzip", "deflate", "br"]:
+                print(f"[+]Vulnerable to Compression Bombs")
+                print(f"Content-Encoding is {content_encoding}. Compression is enabled.")
+                print("Ensure the server has safeguards against compression bombs.")
+            else:
+                print("No compression used in the response.")
+        
+    except requests.exceptions.RequestException as e:
+            print(f"Error occurred: {e}")
+    
